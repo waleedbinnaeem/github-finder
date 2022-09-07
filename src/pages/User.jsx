@@ -5,16 +5,24 @@ import Spinner from '../components/layout/Spinner'
 import { useParams } from 'react-router-dom'
 import GithubContext from '../context/github/GithubContext'
 import RepoList from '../components/repos/RepoList'
+import {getUserAndRepos} from '../context/github/GithubActions'
 
 function User() {
-    const {getUser, user, loading, getUserRepos, repos} = useContext(GithubContext)
+    const {user, loading, repos, dispatch} = useContext(GithubContext)
 
     const params = useParams()
 
     useEffect(() => {
-        getUser(params.login)
-        getUserRepos(params.login)
-    }, [])
+        dispatch({type: 'SET_LOADING'})
+        const getUserData = async() => {
+            
+            const userData = await getUserAndRepos(params.login)
+           
+            dispatch({type: 'GET_USER_AND_REPOS', payload: userData})
+            
+        }
+        getUserData()
+    }, [dispatch, params.login])
 
     const {
         name,
@@ -71,7 +79,7 @@ function User() {
                         <p className='text-white'>{bio}</p>
                         <div className='mt-4 card-actions'>
                             <a 
-                                href={html_url} 
+                                href={html_url} // eslint-disable-next-line
                                 target='_blank' 
                                 rel='noreferrer' 
                                 className='btn btn-outline text-white'>
@@ -91,7 +99,7 @@ function User() {
                                 <div className='stat-title text-md text-white'>Website</div>
                                 <div className='text-lg stat-value text-white'>
                                     <a 
-                                        href={`https://${blog}`}
+                                        href={`https://${blog}`} // eslint-disable-next-line
                                         target='_blank'
                                         rel='noreferrer'
                                     >
@@ -105,7 +113,7 @@ function User() {
                                 <div className='stat-title text-md text-white'>Twitter</div>
                                 <div className='text-lg stat-value text-white'>
                                     <a 
-                                        href={`https://twitter.com/${twitter_username}`}
+                                        href={`https://twitter.com/${twitter_username}`} // eslint-disable-next-line
                                         target='_blank'
                                         rel='noreferrer'
                                     >
